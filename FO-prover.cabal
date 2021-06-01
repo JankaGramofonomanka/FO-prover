@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b79f1632f30ffc1bd065065f6f24080d2430ba88efa84e5b5a0c5154a4987980
+-- hash: 7d6a24f953d20e70f2937ecab666b786e69fd4eb0b57043509f536ef8498c822
 
 name:           FO-prover
 version:        0.1.0.0
@@ -28,8 +28,8 @@ source-repository head
 library
   exposed-modules:
       Formula
-      FromLabs
       Parser
+      Skolemization
       Utils
   other-modules:
       Paths_FO_prover
