@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3fa40da5c85874129dbd06f62c91bd1860c649c86979e0e3681a673c9a3559ec
+-- hash: b79f1632f30ffc1bd065065f6f24080d2430ba88efa84e5b5a0c5154a4987980
 
 name:           FO-prover
 version:        0.1.0.0
@@ -28,7 +28,7 @@ source-repository head
 library
   exposed-modules:
       Formula
-      Lib
+      FromLabs
       Parser
       Utils
   other-modules:
@@ -46,7 +46,6 @@ library
 executable FO-prover
   main-is: FO-prover.hs
   other-modules:
-      Main
       Paths_FO_prover
   hs-source-dirs:
       app
