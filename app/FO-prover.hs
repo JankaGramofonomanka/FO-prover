@@ -17,7 +17,7 @@ import Test.QuickCheck hiding (Fun, (===))
 import Formula
 import Parser hiding (one)
 
-prover _ = True
+prover phi = True
 
 main :: IO ()
 main = do
