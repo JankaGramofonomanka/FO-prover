@@ -32,6 +32,15 @@ instance Show GTerm where
 constant :: FunName -> GTerm
 constant f = GTerm f []
 
+fromGTerm :: GTerm -> GenTerm a
+fromGTerm (GTerm f args) = Fun f $ map fromGTerm args
+
+
+toGTerm :: GenTerm a -> GTerm
+toGTerm (Fun f args) = GTerm f $ map toGTerm args
+toGTerm (Var x) = error "not a ground term"
+
+
 herbrandUni :: Signature -> [GTerm]
 herbrandUni sig = toList $ altUni newSig where
   
