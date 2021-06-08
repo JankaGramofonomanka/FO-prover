@@ -4,12 +4,9 @@ import Data.List
 import Control.Monad.State.Strict
 
 import FirstOrder.Formula
+import Utils
 
 -- utils ----------------------------------------------------------------------
-update :: Eq a => (a -> b) -> a -> b -> a -> b
-update f a b x | x == a = b
-               | otherwise = f x
-
 generalise :: Formula -> Formula
 generalise phi = go $ fv phi
   where go [] = phi

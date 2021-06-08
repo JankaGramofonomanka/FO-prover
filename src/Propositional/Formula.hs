@@ -9,17 +9,12 @@ import Control.Monad
 import Control.Monad.State
 import Test.QuickCheck
 import System.IO.Unsafe
+import Utils
 
 
 
 
--- updating a function
-update :: Eq a => (a -> b) -> a -> b -> a -> b
-update ρ x v = \y -> if x == y then v else ρ y
 
--- useful for debugging
-debug :: Show a => String -> a -> a
-debug str x = seq (unsafePerformIO $ do putStr "<"; putStr str; putStr ": "; print x; putStr ">") x
 
 -- generation of fresh variable names
 type VarName = String
