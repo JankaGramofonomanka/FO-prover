@@ -164,8 +164,8 @@ prop_resolution = resolution [[Pos "p", Pos "q"],[Pos "p", Pos "r"],[Neg "p", Ne
 
 
 
-sat_DP :: SATSolver
-sat_DP α = satCNF $ ecnf α where
+satDP :: SATSolver
+satDP α = satCNF $ ecnf α where
   satCNF cnfForm = case cnfForm of
     [] -> True
     β -> if elem [] β then False else let
