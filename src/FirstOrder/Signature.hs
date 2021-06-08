@@ -42,6 +42,8 @@ constants :: Signature -> [FunName]
 constants sig = map fst $ filter (\t -> snd t == 0) sig
 
 
+
+
 freshFunName :: Signature -> FunName
 freshFunName sig = fresh $ map fst sig
 
