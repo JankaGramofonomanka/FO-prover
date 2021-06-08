@@ -10,7 +10,7 @@ import qualified Text.ParserCombinators.Parsec.Token as Token
 import qualified Text.ParserCombinators.Parsec as Parsec
 import Test.QuickCheck hiding (Fun)
 import Utils
-import Formula
+import FirstOrder.Formula
 
 languageDef =
    emptyDef { Token.commentStart    = "(-"

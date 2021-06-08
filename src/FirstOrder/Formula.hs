@@ -1,6 +1,6 @@
 {-# LANGUAGE UnicodeSyntax, TypeSynonymInstances, FlexibleInstances #-}
 
-module Formula where
+module FirstOrder.Formula where
 
 import System.IO
 import Data.List

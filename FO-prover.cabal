@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7d6a24f953d20e70f2937ecab666b786e69fd4eb0b57043509f536ef8498c822
+-- hash: a6474c2abc3888c29a497909ce94d2a9ce8f6bc30870ea1f7990584bd86997dc
 
 name:           FO-prover
 version:        0.1.0.0
@@ -27,9 +27,12 @@ source-repository head
 
 library
   exposed-modules:
-      Formula
+      FirstOrder.Formula
+      FirstOrder.Skolemization
       Parser
-      Skolemization
+      Propositional.CNF
+      Propositional.DavisPutnamSAT
+      Propositional.Formula
       Utils
   other-modules:
       Paths_FO_prover

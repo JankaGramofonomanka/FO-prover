@@ -1,9 +1,9 @@
-module Skolemization where
+module FirstOrder.Skolemization where
 
 import Data.List
 import Control.Monad.State.Strict
 
-import Formula
+import FirstOrder.Formula
 
 -- utils ----------------------------------------------------------------------
 update :: Eq a => (a -> b) -> a -> b -> a -> b
