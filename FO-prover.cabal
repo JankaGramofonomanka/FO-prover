@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a6474c2abc3888c29a497909ce94d2a9ce8f6bc30870ea1f7990584bd86997dc
+-- hash: ac479c08800f8aeb3f5f69499392b3c065686d1a1cd3a8cf46387362ee5af9d9
 
 name:           FO-prover
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      FirstOrder.Conversion
       FirstOrder.Formula
       FirstOrder.Skolemization
       Parser
