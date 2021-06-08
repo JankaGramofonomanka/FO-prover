@@ -1,7 +1,9 @@
 module FirstOrder.Signature where
 
 import Data.List
+import Data.Ord
 import FirstOrder.Formula
+import Propositional.Formula (fresh)
 
 type Arity = Int
 type Signature = [(FunName, Arity)]
@@ -24,9 +26,24 @@ sig (Exists _ phi) = sig phi
 sig (Forall _ phi) = sig phi
 
 
+ordSig :: Formula -> Signature
+ordSig phi = sortBy (comparing snd) $ sig phi
 
 
+splitSig :: Signature -> ([FunName], Signature)
+splitSig sig = (map fst cSig, fSig) where
+  (cSig, fSig) = splitBy (\t -> snd t == 0) sig
 
+  splitBy pred = foldr f ([], []) where
+    f x (yes, no) = if pred x then (x : yes, no) else (yes, x : no)
+  
+
+constants :: Signature -> [FunName]
+constants sig = map fst $ filter (\t -> snd t == 0) sig
+
+
+freshFunName :: Signature -> FunName
+freshFunName sig = fresh $ map fst sig
 
 
 

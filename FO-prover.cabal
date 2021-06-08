@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8e6aee44dd189d14e0480b75deeb56d98fc6a27e1e7fe197f9012eabee469909
+-- hash: 43cab81e31b627bba0cd6e628721dd7c7c79d3661b039c95ac17b577a7981243
 
 name:           FO-prover
 version:        0.1.0.0
@@ -31,6 +31,7 @@ library
       FirstOrder.Formula
       FirstOrder.Signature
       FirstOrder.Skolemization
+      Herbrand
       Parser
       Propositional.CNF
       Propositional.DavisPutnamSAT
