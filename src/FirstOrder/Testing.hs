@@ -8,6 +8,8 @@ import Test.QuickCheck hiding (Fun, (===))
 
 import FirstOrder.Formula
 import FirstOrder.Skolemization
+import FirstOrder.Conversion
+import qualified Propositional.Formula as Prop
 import Utils
 
 -- Formula --------------------------------------------------------------------
@@ -65,10 +67,62 @@ prop_generalise = generalise (Exists "x" (Rel "R" [Fun "f" [Var "x", Var "y"], V
 prop_skolem_1 = skolemize (Forall "x" $ Exists "y" $ Rel "P" [Var "x", Var "y"] /\ Rel "Q" [Var "y"]) == Forall "x" (And (Rel "P" [Var "x", Fun "y" [Var "x"]]) (Rel "Q" [Fun "y" [Var "x"]]))
 
 
+-- Conversion -----------------------------------------------------------------
+quantFree :: Formula -> Bool
+quantFree alpha = case alpha of
+    F               -> True
+    T               -> True
+
+    Rel _ _         -> True
+    Not     phi     -> quantFree phi
+    
+    Or      phi psi -> quantFree phi && quantFree psi
+    And     phi psi -> quantFree phi && quantFree psi
+    Implies phi psi -> quantFree phi && quantFree psi
+    Iff     phi psi -> quantFree phi && quantFree psi
+    
+    Exists _ _      -> False
+    Forall _ _      -> False
+
+-- this is just to generate a quantifier free formula, 
+-- no need of preserving any properties like satisfiablility etc.
+removeQuants :: Formula -> Formula 
+removeQuants alpha = case alpha of
+    Not     phi     -> Not $ removeQuants phi
+    
+    Or      phi psi -> Or       (removeQuants phi) (removeQuants psi)
+    And     phi psi -> And      (removeQuants phi) (removeQuants psi)
+    Implies phi psi -> Implies  (removeQuants phi) (removeQuants psi)
+    Iff     phi psi -> Iff      (removeQuants phi) (removeQuants psi)
+    
+    Exists x phi    -> removeQuants phi
+    Forall x phi    -> removeQuants phi
+
+    _               -> alpha
+
+prop_removeQuants_works :: Formula -> Bool
+prop_removeQuants_works phi = quantFree $ removeQuants phi
+
+prop_conversion_works_1 :: Formula -> Bool
+prop_conversion_works_1 alpha = let
+    phi = removeQuants alpha
+    (propToAtomic, atomicToProp) = assignProps phi
+
+    phiClone = propToFO propToAtomic $ 
+      quantFreeFOToProp atomicToProp phi
+
+  in phiClone == phi
+
+
+
 main :: IO ()
 main = putStrLn "Test FirstOrder"
     >> quickCheck prop_fv
     >> quickCheck prop_generalise
     >> quickCheck prop_skolem_1
+
+    -- test a test helper function
+    >> quickCheck prop_removeQuants_works
+    >> quickCheck prop_conversion_works_1
 
 

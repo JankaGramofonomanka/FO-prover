@@ -104,5 +104,16 @@ quantFreeFOToProp propAss = go where
     (FO.Exists x phi)     -> error "formula is not quantifier free"
     (FO.Forall x phi)     -> error "formula is not quantifier free"
 
+propToFO :: (Prop.PropName -> Atomic) -> Prop.Formula -> FO.Formula
+propToFO atomicAss = go where
 
-
+  go :: Prop.Formula -> FO.Formula
+  go alpha = case alpha of
+    Prop.T                -> FO.T
+    Prop.F                -> FO.F
+    Prop.Prop p           -> atomicToFOFormula $ atomicAss p
+    Prop.Not      phi     -> FO.Not     (go phi)
+    Prop.And      phi psi -> FO.And     (go phi) (go psi)
+    Prop.Or       phi psi -> FO.Or      (go phi) (go psi)
+    Prop.Implies  phi psi -> FO.Implies (go phi) (go psi)
+    Prop.Iff      phi psi -> FO.Iff     (go phi) (go psi)
