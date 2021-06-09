@@ -6,4 +6,4 @@ FO-prover:
 	stack build --copy-bins
 
 clean:
-	rm FO-prover *.hi *.o
+	rm FO-prover
