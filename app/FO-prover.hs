@@ -14,12 +14,9 @@ import Control.Monad.State
 
 import Test.QuickCheck hiding (Fun, (===))
 
-import FirstOrder.Formula
-import FirstOrder.Skolemization (skolemize)
 import Parser hiding (one)
 
-prover phi = True where
-  psi = skolemize phi
+import Prover (prover)
 
 main :: IO ()
 main = do
