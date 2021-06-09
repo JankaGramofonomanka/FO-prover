@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 76b1b702e5233be3e762a2441d68a6f41f21d975f9f84dcf630cb61367613fad
+-- hash: d8de09eddb6f8302bb0ff7588f7fe2265bda10edfe77cc4f559d95ddb3498e44
 
 name:           FO-prover
 version:        0.1.0.0
@@ -39,6 +39,7 @@ library
       Propositional.Formula
       Propositional.Testing
       Prover
+      Testing
       Utils
   other-modules:
       Paths_FO_prover
