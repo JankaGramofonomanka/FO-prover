@@ -14,7 +14,7 @@ import Utils
 removeForall :: Formula -> Formula
 removeForall alpha = case alpha of
   
-  Not phi         -> removeForall phi
+  Not phi         -> Not $ removeForall phi
 
   Or      phi psi -> Or       (removeForall phi) (removeForall psi)
   And     phi psi -> And      (removeForall phi) (removeForall psi)
@@ -37,11 +37,12 @@ prover phi = or $ map not results where
 
     signature = sig ksi
 
+    terms :: [Term]
     terms = map fromGTerm $ herbrandUni signature
 
     (cts, funcs) = splitSig signature
 
-    ks = if null funcs then [0..(length terms)] else [0..]
+    ks = if null funcs then [1..(length terms)] else [1..]
     
     results :: [Bool]
     results = do
@@ -74,11 +75,11 @@ solve1 subst phi = let
 
 solve :: [Substitution] -> Formula -> Bool
 solve substs phi = let
-  phiInstance = foldl And T [apply subst phi | subst <- substs]
-  
+  phiInstance = foldl1 And [apply subst phi | subst <- substs]
+    
   (_, assignment) = assignProps phiInstance
   propInstance = quantFreeFOToProp assignment phiInstance
-
+  
   in satDP propInstance
 
 
