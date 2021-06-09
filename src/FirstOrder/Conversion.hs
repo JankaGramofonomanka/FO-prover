@@ -42,6 +42,8 @@ type Bijection a b = (a -> b, b -> a)
 type PAC = Bijection Prop.PropName Atomic
 
 
+
+-- First Order -> PAC ---------------------------------------------------------
 assignProps :: FO.Formula -> PAC
 assignProps phi = evalState (go phi initCorresp) 0 where
   initCorresp = (const err, const err)
@@ -82,7 +84,49 @@ assignProps phi = evalState (go phi initCorresp) 0 where
     i <- get
     modify (+1)
     return $ "p" ++ show i
-    
+
+
+
+
+-- Propositional -> PAC -------------------------------------------------------
+assignAtomics :: Prop.Formula -> PAC
+assignAtomics phi = go phi initCorresp where
+  initCorresp = (const err, const err)
+  err = error "undefined prop / atomic"
+
+  go :: Prop.Formula -> PAC ->  PAC
+  go alpha cor = case alpha of
+
+    Prop.T                  -> cor
+    Prop.F                  -> cor
+
+    (Prop.Prop p)           -> goProp p cor
+    (Prop.Not phi)          -> go phi cor
+
+    (Prop.Or phi psi)       -> go2 phi psi cor
+    (Prop.And phi psi)      -> go2 phi psi cor
+    (Prop.Implies phi psi)  -> go2 phi psi cor
+    (Prop.Iff phi psi)      -> go2 phi psi cor
+
+  go2 :: Prop.Formula -> Prop.Formula -> PAC -> PAC
+
+  go2 phi psi cor = let
+      cor1 = go phi cor
+      cor2 = go psi cor1
+    in cor2
+
+  goProp :: Prop.PropName -> PAC -> PAC
+  goProp p (f, g) = let 
+      a = Atomic p []
+
+    in (update f p a, update g a p)
+
+
+
+
+
+
+
 
 quantFreeFOToProp :: (Atomic -> Prop.PropName) -> FO.Formula -> Prop.Formula
 quantFreeFOToProp propAss = go where

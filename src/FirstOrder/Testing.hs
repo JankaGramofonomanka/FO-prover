@@ -10,6 +10,7 @@ import FirstOrder.Formula
 import FirstOrder.Skolemization
 import FirstOrder.Conversion
 import qualified Propositional.Formula as Prop
+import qualified Propositional.Testing as PropTest
 import Utils
 
 -- Formula --------------------------------------------------------------------
@@ -108,10 +109,19 @@ prop_conversion_works_1 alpha = let
     phi = removeQuants alpha
     (propToAtomic, atomicToProp) = assignProps phi
 
-    phiClone = propToFO propToAtomic $ 
-      quantFreeFOToProp atomicToProp phi
+    phiClone = propToFO propToAtomic $ quantFreeFOToProp atomicToProp phi
 
   in phiClone == phi
+
+
+prop_conversion_works_2 :: Prop.Formula -> Bool
+prop_conversion_works_2 phi = let
+
+    (propToAtomic, atomicToProp) = assignAtomics phi
+    phiClone = quantFreeFOToProp atomicToProp $ propToFO propToAtomic phi
+
+  in phiClone == phi
+
 
 
 
@@ -124,5 +134,6 @@ main = putStrLn "Test FirstOrder"
     -- test a test helper function
     >> quickCheck prop_removeQuants_works
     >> quickCheck prop_conversion_works_1
+    >> quickCheck prop_conversion_works_2
 
 
