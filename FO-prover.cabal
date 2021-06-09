@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 27fc2596a2505032a942b8104d041b1a8aae60351d854e798b47388d3d093bd7
+-- hash: 3d924b8f04121856329cac4f7fbf42d662045db8801fa4a31c96bf7dcdb72c71
 
 name:           FO-prover
 version:        0.1.0.0
@@ -36,6 +36,7 @@ library
       Propositional.CNF
       Propositional.DavisPutnamSAT
       Propositional.Formula
+      Propositional.Testing
       Prover
       Utils
   other-modules:

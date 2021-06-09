@@ -4,10 +4,7 @@ module Propositional.CNF where
 
 
 import Data.List
-import Control.Monad
 import Control.Monad.State
-import Test.QuickCheck
-import System.IO.Unsafe
 
 
 import Propositional.Formula
@@ -66,22 +63,9 @@ distribute xss yss = go xss yss yss where
   go (_:xss) yss [] = go xss yss yss
   go (xs:xss) yss (ys:yss') = (xs ++ ys) : go (xs:xss) yss yss'
 
-prop_distribute :: Bool
-prop_distribute = distribute [[1, 2], [3, 4]] [[5, 6], [7]] == [[1, 2, 5, 6], [1, 2, 7], [3, 4, 5, 6], [3, 4, 7]]
 
 
 
-
-
-test_cnf :: Formula -> Bool
-test_cnf φ = tautology $ φ ⇔ (cnf2formula (cnf φ))
-
---quickCheckWith (stdArgs {maxSize = 18}) test_cnf
-
-
-
-equi_satisfiable :: Formula -> Formula -> Bool
-equi_satisfiable φ ψ = satisfiable φ == satisfiable ψ
 
 
 
@@ -233,10 +217,5 @@ simplifyBinary op φ ψ = if trivial φ && trivial ψ then do
 
 
 
-prop_ecnf :: Formula -> Bool
-prop_ecnf phi = equi_satisfiable phi (cnf2formula $ ecnf phi)
-
---quickCheckWith (stdArgs {maxSize = 18}) prop_ecnf
---quickCheck prop_ecnf
 
 

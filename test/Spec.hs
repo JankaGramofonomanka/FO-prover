@@ -1,2 +1,5 @@
+
+import qualified Propositional.Testing as Prop
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = Prop.main

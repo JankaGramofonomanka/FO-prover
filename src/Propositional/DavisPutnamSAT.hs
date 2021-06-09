@@ -4,10 +4,6 @@ module Propositional.DavisPutnamSAT where
 
 
 import Data.List
-import Control.Monad
-import Control.Monad.State
-import Test.QuickCheck
-import System.IO.Unsafe
 
 
 import Propositional.Formula
@@ -64,19 +60,6 @@ remove_clauses literal β = foldl foldF [] β where
 
 
 
-prop_one_literal :: Bool
-prop_one_literal =
-  one_literal
-    [[Pos "p"], [Pos "p", Pos "q", Pos "p", Pos "r"], [Neg "q", Pos "r", Neg "p", Neg "r", Neg "p"], [Neg "q", Neg "p"], [Pos "q", Pos "r", Pos "s"], [Neg "p", Pos "p"]] ==
-    [[Pos "r",Pos "s"]] &&
-  one_literal
-    [[Pos "p2"],[Neg "p2",Pos "p"],[Neg "p2",Pos "p1"],[Neg "p",Neg "p1",Pos "p2"],[Neg "p1",Pos "q"],[Neg "p1",Pos "p0"],[Neg "q",Neg "p0",Pos "p1"],[Neg "p0",Pos "s"],[Neg "p0",Neg "p"],[Neg "s",Pos "p",Pos "p0"]] ==
-    [[]] &&
-  one_literal
-    [[Pos "q"],[Pos "p0"],[Neg "p0",Pos "s"],[Neg "p0"]] ==
-    [[]]
-    
---quickCheck prop_one_literal
 
 
 
@@ -106,16 +89,6 @@ affirmative_negative α = rem_clauses allLits α where
     
 
 
-
-
-prop_affirmative_negative :: Bool
-prop_affirmative_negative =
-  affirmative_negative [[Pos "p"],[Pos "p1"],[Neg "p1",Pos "q"],[Neg "p1",Pos "p0"],[Neg "q",Neg "p0",Pos "p1"],[Neg "p0",Pos "s"],[Neg "p0",Neg "p"],[Neg "s",Pos "p",Pos "p0"]] ==
-    [[Pos "p"],[Pos "p1"],[Neg "p1",Pos "q"],[Neg "p1",Pos "p0"],[Neg "q",Neg "p0",Pos "p1"],[Neg "p0",Pos "s"],[Neg "p0",Neg "p"],[Neg "s",Pos "p",Pos "p0"]] &&
-  affirmative_negative [[Pos "p", Pos "q"], [Pos "p", Neg "q"]] ==
-  []
-    
---quickCheck prop_affirmative_negative
 
 
 
@@ -155,8 +128,6 @@ segregate lit α = foldl foldF ([], [], []) $ map nub α where
       (accBeta ++ [clause], accPhi, accPsi)
     
 
-prop_resolution :: Bool
-prop_resolution = resolution [[Pos "p", Pos "q"],[Pos "p", Pos "r"],[Neg "p", Neg "q"]] == [[Pos "q", Neg "q"], [Pos "r", Neg "q"]]
 
 
 

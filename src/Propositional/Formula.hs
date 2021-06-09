@@ -5,10 +5,6 @@ module Propositional.Formula where
 
 
 import Data.List
-import Control.Monad
-import Control.Monad.State
-import Test.QuickCheck
-import System.IO.Unsafe
 import Utils
 
 
@@ -61,28 +57,6 @@ infixr 4 <==>, ⇔
 (⇔) = Iff -- input with "\lr"
 
 
-
-instance Arbitrary Formula where
-    arbitrary = sized f where
-      
-      f 0 = oneof $ map return $ [p, q, r, s, t] ++ [T, F]
-
-      f size = frequency [
-        (1, liftM Not (f (size - 1))),
-        (4, do
-              size' <- choose (0, size - 1)
-              conn <- oneof $ map return [And, Or, Implies, Iff]
-              left <- f size'
-              right <- f $ size - size' - 1
-              return $ conn left right)
-        ]
-        
-    shrink (Not φ) = [φ]
-    shrink (Or φ ψ) = [φ, ψ]
-    shrink (And φ ψ) = [φ, ψ]
-    shrink (Implies φ ψ) = [φ, ψ]
-    shrink (Iff φ ψ) = [φ, ψ]
-    shrink _ = []
 
 
     
