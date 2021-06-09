@@ -14,7 +14,7 @@ type VarName = String
 type FunName = String
 type RelName = String
 
-data GenTerm a = Var a | Fun FunName [GenTerm a] deriving (Eq, Show)
+data GenTerm a = Var a | Fun FunName [GenTerm a] deriving Eq
 
 type Term = GenTerm VarName
 
@@ -40,7 +40,9 @@ data Formula =
     | Implies Formula Formula
     | Iff Formula Formula
     | Exists VarName Formula
-    | Forall VarName Formula deriving (Eq, Show)
+    | Forall VarName Formula 
+    
+    deriving Eq
 
 -- type Formula = GenFormula VarName
 
@@ -91,4 +93,45 @@ fv (Implies phi psi) = nub $ fv phi ++ fv psi
 fv (Iff phi psi) = nub $ fv phi ++ fv psi
 fv (Exists x phi) = delete x $ fv phi
 fv (Forall x phi) = delete x $ fv phi
+
+
+
+instance Show Term where
+  show (Var x) = x
+  show (Fun f l) = case l of
+    [] -> f
+    (t : ts) -> f ++ "(" ++ prtList (t : ts) ++ ")" 
+    
+    where
+      prtList [] = ""
+      prtList [x] = show x
+      prtList (x : xs) = show x ++ ", " ++ prtList xs
+
+
+
+instance Show Formula where
+
+  show alpha = case alpha of
+    F               -> "F"
+    T               -> "T"
+    
+    Rel r ts        -> r ++ show ts
+    Not phi         -> "~ " ++ show phi
+
+    Or      phi psi -> 
+      "(" ++ show phi ++ ")" ++ "∨"     ++ "(" ++ show psi ++ ")"
+      
+    And     phi psi -> 
+      "(" ++ show phi ++ ")" ++ "∧"     ++ "(" ++ show psi ++ ")"
+      
+    Implies phi psi -> 
+      "(" ++ show phi ++ ")" ++ "-->"   ++ "(" ++ show psi ++ ")"
+      
+    Iff     phi psi -> 
+      "(" ++ show phi ++ ")" ++ "<-->"  ++ "(" ++ show psi ++ ")"
+      
+    
+    Exists x phi    -> "Exists " ++ x ++ " : (" ++ show phi ++ ")"
+    Forall x phi    -> "Forall " ++ x ++ " : (" ++ show phi ++ ")"
+  
 
