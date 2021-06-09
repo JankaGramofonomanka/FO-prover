@@ -4,13 +4,8 @@ module FirstOrder.Formula where
 
 import System.IO
 import Data.List
-import Control.Monad
-import Text.Parsec
-import Text.ParserCombinators.Parsec
-import Text.ParserCombinators.Parsec.Expr
-import Text.ParserCombinators.Parsec.Language
 import qualified Text.ParserCombinators.Parsec.Token as Token
-import Test.QuickCheck hiding (Fun, (===))
+
 
 import Utils
 
@@ -81,45 +76,6 @@ apply f (Iff phi psi) = Iff (apply f phi) (apply f psi)
 apply f (Exists x phi) = Exists x (apply (update f x (Var x)) phi)
 apply f (Forall x phi) = Forall x (apply (update f x (Var x)) phi)
 
-instance {-# OVERLAPPING #-} Arbitrary VarName where
-  arbitrary = elements ["x", "y", "z", "t"]
-
-instance Arbitrary Term where
-  arbitrary = resize 8 $ sized f where
-    f size | size == 0 || size == 1 = do x <- arbitrary
-                                         return $ Var x
-           | otherwise = frequency [ (1, go sizes) | sizes <- catalan size]
-              where go sizes = do ts <- sequence $ map f sizes
-                                  return $ Fun "f" ts
-
-instance Arbitrary Formula where
-  arbitrary = resize 30 $ sized f where
-    f 0 = do ts <- arbitrary
-             return $ Rel "R" ts
-    f size = frequency [
-      (1, liftM Not (f (size - 1))),
-      (4, do
-        size' <- choose (0, size - 1)
-        conn <- oneof $ map return [And, Or, Implies, Iff]
-        left <- f $ size'
-        right <- f $ size - size' - 1
-        return $ conn left right),
-      (5, do
-        conn <- oneof $ map return [Exists, Forall]
-        phi <- f $ size - 1
-        x <- arbitrary
-        return $ conn x phi)
-      ]
-
-  shrink (Not varphi) = [varphi]
-  shrink (Or varphi psi) = [varphi, psi]
-  shrink (And varphi psi) = [varphi, psi]
-  shrink (Implies varphi psi) = [varphi, psi]
-  shrink (Iff varphi psi) = [varphi, psi]
-  shrink (Exists _ varphi) = [varphi]
-  shrink (Forall _ varphi) = [varphi]
-  shrink _ = []
-
 type SATSolver = Formula -> Bool
 type FOProver = Formula -> Bool
 
@@ -136,5 +92,3 @@ fv (Iff phi psi) = nub $ fv phi ++ fv psi
 fv (Exists x phi) = delete x $ fv phi
 fv (Forall x phi) = delete x $ fv phi
 
-phifun = Exists "x" (Rel "R" [Fun "f" [Var "x", Var "y"], Var "z"])
-prop_fv = fv phifun == ["y", "z"]

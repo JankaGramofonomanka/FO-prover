@@ -102,7 +102,8 @@ prop_satDP_works phi = satisfiable phi == satDP phi
 
 
 main :: IO ()
-main = quickCheck prop_distribute
+main = putStrLn "Test Propositional"
+    >> quickCheck prop_distribute
     >> quickCheckWith (stdArgs {maxSize = 18}) test_cnf
     >> quickCheckWith (stdArgs {maxSize = 18}) prop_ecnf
     -- >> quickCheck test_cnf
