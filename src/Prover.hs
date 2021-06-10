@@ -9,6 +9,7 @@ import FirstOrder.Conversion
 import Herbrand
 import Propositional.DavisPutnamSAT
 import Utils
+import Alternate
 
 
 removeForall :: Formula -> Formula
@@ -28,7 +29,7 @@ removeForall alpha = case alpha of
 
 
 prover :: Formula -> Bool
-prover phi = or $ map not results where
+prover phi = or $ map not $ toList results where
 
     psi = skolemize $ Not phi
     ksi = removeForall psi
@@ -44,17 +45,20 @@ prover phi = or $ map not results where
 
     ks = if null funcs then [1..(length terms)] else [1..]
     
-    results :: [Bool]
+    results :: Alternate Bool
     results = do
       
-      k <- ks
+      k <- Alt ks
 
-      termSets <- replicateM k $ replicateM (length xs) terms
+      termSets <- replicateM k $ replicateM (length xs) $ Alt terms
 
       let substs = [makeSubst xs ts | ts <- termSets]
 
       return $ solve substs ksi
 
+    
+
+    
 
 
 makeSubst :: [VarName] -> [Term] -> Substitution
