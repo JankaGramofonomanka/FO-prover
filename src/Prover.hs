@@ -29,36 +29,52 @@ removeForall alpha = case alpha of
 
 
 prover :: Formula -> Bool
-prover phi = or $ map not $ toList results where
+prover phi = if null funcs then
+    (not bruteCheck) && (or $ map not $ toList results)
 
-    psi = skolemize $ Not phi
-    ksi = removeForall psi
-
-    xs = vars ksi
-
-    signature = sig ksi
-
-    terms :: [Term]
-    terms = map fromGTerm $ herbrandUni signature
-
-    (cts, funcs) = splitSig signature
-
-    ks = if null funcs then [1..(length terms)] else [1..]
+  else
+    or $ map not $ toList results 
     
-    results :: Alternate Bool
-    results = do
+    where
+
+
+      psi = skolemize $ Not phi
+      ksi = removeForall psi
+
+      xs = vars ksi
+
+      signature = sig ksi
+
+      terms :: [Term]
+      terms = map fromGTerm $ herbrandUni signature
+
+      (cts, funcs) = splitSig signature
+
+      ks = if null funcs then [1..(length terms)] else [1..]
       
-      k <- Alt ks
+      results :: Alternate Bool
+      results = do
+        
+        k <- Alt ks
 
-      termSets <- replicateM k $ replicateM (length xs) $ Alt terms
+        termSets <- replicateM k $ replicateM (length xs) $ Alt terms
 
-      let substs = [makeSubst xs ts | ts <- termSets]
+        let substs = [makeSubst xs ts | ts <- termSets]
 
-      return $ solve substs ksi
+        return $ solve substs ksi
 
-    
+      
 
-    
+      bruteCheck :: Bool
+      bruteCheck = solve substs ksi  where
+        
+        substs :: [Substitution]
+        substs = do
+
+          ts <- replicateM (length xs) terms
+
+          return $ makeSubst xs ts
+
 
 
 makeSubst :: [VarName] -> [Term] -> Substitution
