@@ -30,13 +30,12 @@ removeForall alpha = case alpha of
 
 prover :: Formula -> Bool
 prover phi = if null funcs then
-    (not bruteCheck) && (or $ map not $ toList results)
+    not bruteCheck
 
   else
     or $ map not $ toList results 
     
     where
-
 
       psi = skolemize $ Not phi
       ksi = removeForall psi
@@ -49,22 +48,22 @@ prover phi = if null funcs then
       terms = map fromGTerm $ herbrandUni signature
 
       (cts, funcs) = splitSig signature
-
-      ks = if null funcs then [1..(length terms)] else [1..]
       
+      -- try all potential "and-ed" instances of `ksi` (ksi_1 /\ ksi_2 /\ ...)
       results :: Alternate Bool
       results = do
         
-        k <- Alt ks
+        k <- fromList [1..]
 
-        termSets <- replicateM k $ replicateM (length xs) $ Alt terms
+        termSets <- replicateM k $ replicateM (length xs) $ fromList terms
 
         let substs = [makeSubst xs ts | ts <- termSets]
 
         return $ solve substs ksi
 
       
-
+      -- check whether a formula made by "and-ing" (ksi_1 /\ ksi_2 /\ ...) all 
+      -- (finitely many) possible instances of `ksi`  is satisfiable
       bruteCheck :: Bool
       bruteCheck = solve substs ksi  where
         
