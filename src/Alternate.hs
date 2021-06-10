@@ -4,7 +4,9 @@ module Alternate where
 import Control.Applicative
 import Control.Monad
 
-
+-- A version of a list, that has a `Monad` instance, such that when infinite 
+-- lists are joined, every element will occur in the resulting list on finite 
+-- index
 newtype Alternate a = Alt [a] deriving (Eq, Ord, Show, Read)
 toList :: Alternate a -> [a]
 toList (Alt l) = l
