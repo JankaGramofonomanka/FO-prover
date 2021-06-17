@@ -1,0 +1,31 @@
+%%
+%% This is file `pliso.def',
+%%
+ \ProvidesFile{pliso.def}
+   [1996/11/23 v0.9w
+ Input encoding file
+                        (test version: still liable to change)]
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvideTextCommandDefault{\textcurrency}
+   {\TextSymbolUnavailable\textcurrency}
+\DeclareInputText{"0A1}{\Aob}
+\DeclareInputText{"0A3}{\Lpb}
+\DeclareInputText{"0A6}{\'S}
+\DeclareInputText{"0AC}{\'Z}
+\DeclareInputText{"0AF}{\Zkb}
+\DeclareInputText{"0B3}{\lpb}
+\DeclareInputText{"0B6}{\'s}
+\DeclareInputText{"0BC}{\'z}
+\DeclareInputText{"0BF}{\zkb}
+\DeclareInputText{"0C6}{\'C}
+\DeclareInputText{"0CA}{\Eob}
+\DeclareInputText{"0D1}{\'N}
+\DeclareInputText{"0D3}{\'O}
+\DeclareInputText{"0E6}{\'c}
+\DeclareInputText{"0EA}{\eob}
+\DeclareInputText{"0F1}{\'n}
+\DeclareInputText{"0F3}{\'o}
+\DeclareInputText{"0B1}{\aob}
+\endinput
+%%
+%% End of file `pliso.def'.

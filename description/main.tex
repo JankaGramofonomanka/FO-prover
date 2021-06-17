@@ -1,0 +1,194 @@
+\documentclass[zad,zawodnik,en]{sinol}
+\usepackage{amsmath}
+\usepackage{pdfsync}
+\usepackage{latexsym}
+\let\lll\undefined
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\newcommand{\ignore}[1]{}
+\newcommand{\sep}{\;\mid\;}
+
+\newcounter{row}
+\newcounter{col}
+
+\begin{document}
+  \section*{\Huge{First-order logic tautology prover} \\ \small{Deadline: Fri 25th June, 2020, 20:00}}
+    \noindent
+    The objective of this assignment is to build a prover for tautologies of first-order logic based on Herbrand's theorem and the Davis-Putnam SAT solver.
+    %
+    Modern provers are based on elaborations of this basic algorithm.
+    %
+    On an input formula $\varphi$:
+    %
+    \begin{enumerate}
+      \item Convert $\neg \varphi$ to an equisatisfiable Skolem normal form $\psi \equiv \forall x_1, \dots, x_n \cdot \xi$, with $\xi$ quantifier-free.
+      \item Verify that $\psi$ is unsatisfiable:
+      By Herbrand's theorem, it suffices to find $n$-tuples of ground terms $\bar u_1, \dots, \bar u_m$ (i.e., elements of the Herbrand universe) s.t.
+      \begin{align*}
+        \xi[\bar x \mapsto \bar u_1] \land \cdots \land \xi[\bar x \mapsto \bar u_m]
+      \end{align*}
+      is unsatisfiable.
+
+      \item Use the Davis-Putnam SAT solver for propositional logic to check that the formula above is unsatisfiable.
+    \end{enumerate}
+    %
+    Notice that (A) if $\varphi$ is a tautology, then the algorithm above will terminate correctly verifying that $\varphi$ is indeed a tautology,
+    and if $\varphi$ is not a tautology,
+    then the algorithm above
+    will not terminate if (B) $\xi$ contains free variables and the Herbrand universe is infinite,
+    and will otherwise terminate reporting that $\varphi$ is not a tautology if
+    (C.1) $\xi$ does not contain free variables,
+    or (C.2) the Herbrand universe is finite.
+    
+    \paragraph{Examples.}
+
+    For an instance of case (A),
+    consider the \emph{drinker's paradox}
+    $\varphi \equiv \exists x \cdot (D(x) \to \forall y \cdot D(y))$,
+    which is a tautology of first-order logic.
+    %
+    Its negation $\neg \varphi$ is logically equivalent to
+    $\forall x \cdot (D(x) \land \exists y \cdot \neg D(y))$,
+    which in prenex normal form is $\forall x \cdot \exists y \cdot (D(x) \land \neg D(y))$.
+    %
+    By Skolemisation we obtain the equisatisfiable formula in Skolem normal form
+    %
+    \begin{align*}
+      \psi \equiv \forall x \cdot \underbrace{(D(x) \land \neg D(f(x)))}_{\xi},
+    \end{align*}
+    where we have introduced a new Skolem functional symbol ``$f$''.
+    %
+    Notice that at this point the Herbrand universe is empty (since there is no constant symbol),
+    so we add to the signature an additional constant symbol $c$.
+    %
+    (If there is already a constant symbol in the signature, then we do not need to add anything.)
+    %
+    In this way the Herbrand universe contains all terms $c, f(c), f(f(c)), \dots$.
+    %
+    We now instantiate $x$ in $\xi$ with the two ground terms $u_1 \equiv c$ and $u_2 \equiv f(c)$,
+    obtaining the ground formula
+    %
+    \begin{align*}
+      \underbrace{(D(c) \land \neg D(f(c)))}_{\xi[x \;\mapsto\; c]} \;\land\;
+      \underbrace{(D(f(c)) \land \neg D(f(f(c))))}_{\xi[x \;\mapsto\; f(c)]},
+    \end{align*}
+    %
+    which is clearly propositionally unsatisfiable.
+    %
+    This confirms that the drinker's paradox is a tautology of first-order logic.
+
+    For an instance of case (B), consider the non-tautology
+    $\varphi \equiv \exists x \cdot \forall y \cdot P(x, y)$.
+    %
+    By negating and Skolemising we get $\psi \equiv \forall x \cdot \neg P(x, f(x))$, we add a fresh constant symbol $c$ to make the Herbrand universe nonempty,
+    however every finite expansion
+    %
+    \begin{align*}
+      \neg P(c, f(c)) \land \neg P(f(c), f^2(c)) \land \cdots \land \neg P(f^n(c), f^{n+1}(c))
+    \end{align*}
+    %
+    is satisfiable (and thus $\psi$ is satisfiable, and thus $\varphi$ is not a tautology),
+    however the program cannot determine this in a finite number of steps.
+
+    For an instance of case (C.1) consider the non-tautology
+    $\varphi \equiv \forall x \cdot R(c, f(x))$,
+    which after negation and Skolemisation becomes the satisfiable $\psi \equiv \neg R(c, f(d))$,
+    which has no free variables and thus we can conclude that $\varphi$ is a non-tautology.
+    Note that the Herband universe is infinite in this case.
+    %
+    Finally, for an instance of case (C.2) consider another non-tautology
+    $\varphi \equiv \forall x, y \cdot \exists z \cdot R(x, y, z)$,
+    after negation and Skolemisation we obtain
+    $\psi \equiv \forall z \cdot \neg R(c, d, z)$
+    for two fresh constants $c, d$
+    (comprising the entire Herbrand universe, which is thus finite in this case)
+    and thus after verifying that the finite expansion $R(c, d, c) \land R(c, d, d)$ is satisfiable we can conclude that $\varphi$ is a non-tautology.
+    
+    \paragraph{Programming languages.}
+    The assignment can be solved using any modern programming language
+    such as C, C++ (gcc), Java, Python, OCaml, Haskell...
+    It is mandatory to provide a Makefile
+    allowing the project to be automatically built and run
+    in a modern computing environment.
+    %
+    Typing ``\texttt{make}'' should result in an executable file
+    called \texttt{FO-prover},
+    which will be run by the test suite to score the solution.
+    %
+    In the file \texttt{FO-prover.hs}
+    there is a simple skeleton written in Haskell
+    correctly parsing the input.
+    %
+    This can be used as a starting point to write the solution.
+    
+    \paragraph{Input \& output.}
+    %
+    The solution program must read the standard input \texttt{stdin}.
+    %
+    The input consists of a single line encoding a formula of first-order logic $\varphi$ according to the following Backus-Naur grammar (c.f.~\texttt{Formula.hs}):
+    %
+    \begin{align*}
+      \varphi, \psi \ :\equiv\ 
+      &
+      \textsf T \sep
+      \textsf F \sep
+      \textsf{Rel}\ \textsf{``string''}\ [t_1, \dots, t_n] \sep
+      \textsf{Not}\ (\varphi) \sep
+      \textsf{And}\ (\varphi)\ (\psi) \sep
+      \textsf{Or}\ (\varphi)\ (\psi) \sep
+      \textsf{Implies}\ (\varphi)\ (\psi) \sep
+      \textsf{Iff}\ (\varphi)\ (\psi) \sep \\
+      &
+      \textsf{Exists}\ \textsf{``string''}\ (\varphi) \sep
+      \textsf{Forall}\ \textsf{``string''}\ (\varphi)
+    \end{align*}
+    %
+    where \textsf{string} is any sequence of alphanumeric characters,
+    and the terms $t_i$'s are in turn generated by the following grammar:
+    %
+    \[ t \;:\equiv\;
+    \textsf{Var}\ \textsf{``string''} \sep
+    \textsf{Fun}\ \textsf{``string''}\ [t_1, \dots, t_n].
+    \]
+    %
+    For example, the input for drinker's paradox is:
+    %
+    \begin{verbatim}
+      Exists "x" (Implies (Rel "D" [Var "x"]) (Forall "y" (Rel "D" [Var "y"])))\end{verbatim}
+    %
+    See also the tests in \texttt{./tests} for further examples of input formulas.
+
+    \texttt{FO-prover} should output \texttt{1} (tautology) or \texttt{0} (non-tautology).
+    Any other output will be considered invalid.
+
+    \paragraph{Testing, scoring, and grading.}
+    %
+    The script \texttt{./run\_tests.sh} scores the provided solution
+    against examples of type A, B, and C.
+    %
+    The program is run for $10$ seconds on each input instance
+    (to have an idea: on a 2,3 GHz Quad-Core Intel Core i5 with 16 GB RAM)
+    and assigns a score as follows:
+    %
+    \begin{center}
+      \begin{tabular}{c|c|c|c|c}
+        type  & output \texttt{0}  & output \texttt{1}  & timeout & \# instances \\ \hline \hline
+        A     & -2          & +1          & 0       & 76\\ \hline
+        B     & +2 (!)      & -2          & +1      & 5 \\ \hline
+        C     & 0           & -2          & -1      & 50
+      \end{tabular}
+    \end{center}
+    %
+    The total score is the sum of the scores for every input.
+    The total number of points for this project is $35$.
+    If the score is $x \in \{-232, \dots, 86\}$,
+    then the number of awarded points is
+    %
+    \begin{align*}
+      \left\lceil\frac {\min (\max (x, 0), 81) \cdot 35}{81}\right\rceil.
+    \end{align*}
+
+    \paragraph{Submission.}
+    The submission is done on \href{}{moodle}.
+\end{document}
